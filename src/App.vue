@@ -1,6 +1,6 @@
 <template>
     <div id="app">
-        <nav id="nav" class="navbar navbar-expand-md bg-dark navbar-dark">
+        <nav id="nav" class="navbar navbar-expand-md bg-dark navbar-dark fixed-top">
             <router-link to="/" class="navbar-brand" @click.native="handleRouterClick(-1)">Online Judge |</router-link>
             <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#collapsibleNavbar">
                 <span class="navbar-toggler-icon"></span>
@@ -13,10 +13,26 @@
                         </router-link>
                     </li>
                 </ul>
-                <div class="ml-auto">
+                <ul v-if="curUser" class="navbar-nav ml-auto">
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" id="navbardrop" data-toggle="dropdown">
+                            <img class="icon" src="@/assets/training.png">
+                            {{curUser.nickname}}
+                        </a>
+                        <div class="dropdown-menu" style="left:unset;right:0;min-width:unset;padding: .25rem 0">
+                            <a v-if="curUser.role.indexOf('admin')!=-1" class="dropdown-item" href="#">Management</a>
+                            <a class="dropdown-item" href="#">Profile</a>
+                            <a class="dropdown-item" href="#">Settings</a>
+                            <a class="dropdown-item" href="#">Stats</a>
+                            <a class="dropdown-item" style="border-top: 1px solid rgba(0, 0, 0, .15) !important;" href="#">Logout</a>
+                        </div>
+                    </li>
+                </ul>
+                <div v-else class="ml-auto">
                     <button type="button" class="btn btn-dark rounded border" @click="signInModalVisible=true">Sign in</button>|
                     <button type="button" class="btn btn-dark rounded border" @click="signUpModalVisible=true">Sign up</button>
                 </div>
+
             </div>
         </nav>
         <router-view></router-view>
@@ -35,7 +51,7 @@
                                     <img class="icon" src="@/assets/training.png">
                                 </span>
                                 </div>
-                                <input type="text" class="form-control" placeholder="Username" v-model="username">
+                                <input type="text" class="form-control" placeholder="Username or Email" v-model="username">
                             </div>
                             <div class="input-group mb-3">
                                 <div class="input-group-prepend">
@@ -111,8 +127,6 @@
             </div>
             <div class="modal-backdrop fade show" key="modalBack" v-show="signInModalVisible||signUpModalVisible"></div>
         </transition-group>
-        {{token}}
-        {{email}}
     </div>
 </template>
 <script>
@@ -123,8 +137,8 @@
         data: function () {
             return {
                 routerSelectId:-1,
-                username:'',
-                password:'',
+                username:'jxc',
+                password:'123456',
                 password2:'',
                 emailFirst:'',
                 emailSecond:'',
@@ -153,14 +167,21 @@
                 this.routerSelectId=index
             },
             handleSignInClick:function () {
-                this.$axios.post('/api/user/login', qs.stringify({
+                if(!this.username||!this.password){
+                    this.$toastr.warning('用户名/密码不能为空')
+                    return
+                }
+                this.$axios.post('/user/login', qs.stringify({
                     username: this.username,
                     password: this.password
                 })).then(response=>{
                     if(response.data.status!=0)
-                        console.log(response.data.msg);
+                        this.$toastr.warning(response.data.msg)
                     else{
-                        this.$store.commit('setToken',response.data.data)
+                        this.username=''
+                        this.password=''
+                        this.$store.commit('login',response.data.data)
+                        this.$toastr.info('欢迎回来'+response.data.data.nickname)
                         this.signInModalVisible=false;
                     }
                 }).catch(error=>{
@@ -168,8 +189,34 @@
                 });
             },
             handleSignUpClick:function () {
-
-                this.signUpModalVisible=false;
+                if(this.username.length<3||this.username.length>16)
+                    this.$toastr.warning('用户名为3~16位字母/数字')
+                else if(this.password.length<6||this.password.length>16)
+                    this.$toastr.warning('密码为6~16位字母/数字/特殊字符')
+                else if(this.password!=this.password2)
+                    this.$toastr.warning('两次输入的密码不一致')
+                else if(this.emailFirst==''||this.emailSecond==''||this.emailSecond.indexOf('.')<0)
+                    this.$toastr.warning('邮箱格式不正确')
+                else{
+                    this.$axios.post('/user/register', qs.stringify({
+                        username: this.username,
+                        password: this.password,
+                        email: this.email
+                    })).then(response=>{
+                        if(response.data.status!=0)
+                            this.$toastr.warning(response.data.msg)
+                        else{
+                            this.password2=''
+                            this.emailFirst=''
+                            this.emailSecond=''
+                            this.$toastr.info('注册成功，请登录')
+                            this.signInModalVisible=true;
+                            this.signUpModalVisible=false;
+                        }
+                    }).catch(error=>{
+                        console.log(error);
+                    });
+                }
             },
             handleAtInput:function () {
                 if(this.emailFirst.endsWith('@')) {
@@ -186,7 +233,7 @@
             },
             ...mapState([
                 // 映射 this.token 为 store.state.token
-                'token'
+                'token','curUser'
             ])
         }
     }
@@ -226,5 +273,4 @@
     .fade-enter, .fade-leave-to{
         opacity: 0;
     }
-
 </style>

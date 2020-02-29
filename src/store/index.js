@@ -5,11 +5,14 @@ Vue.use(Vuex)
 
 export default new Vuex.Store({
   state: {
-    token:'abc'
+    token:undefined,
+    curUser:undefined
   },
   mutations: {
-    setToken(state,token){
-       state.token=token
+    login(state,data){
+      state.token=data.token
+      delete data.token
+      state.curUser=data
     }
   },
   actions: {

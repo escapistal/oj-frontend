@@ -2,6 +2,7 @@
 
 import Vue from 'vue';
 import axios from "axios";
+import store from '../store'
 
 // Full config:  https://github.com/axios/axios#request-config
 // axios.defaults.baseURL = process.env.baseURL || process.env.apiUrl || '';
@@ -17,8 +18,10 @@ let config = {
 const _axios = axios.create(config);
 
 _axios.interceptors.request.use(
-  function(config) {
+  config=> {
     // Do something before request is sent
+    if(store.state.token)
+      config.headers.Authorization=store.state.token
     return config;
   },
   function(error) {
