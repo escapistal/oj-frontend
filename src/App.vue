@@ -7,7 +7,9 @@
             </button>
             <div class="collapse navbar-collapse" id="collapsibleNavbar">
                 <ul class="navbar-nav">
-                    <li class="nav-item" v-for="(item,index) in routerList" @click="handleRouterClick(index)">
+                    <li class="nav-item" v-for="(item,index) in routerList"
+                        @click="handleRouterClick(index)"
+                        data-toggle="collapse" data-target="#collapsibleNavbar.show">
                         <router-link :to="item.to" class="nav-link" :class="index==routerSelectId?'nav-selected':'nav-unselected'">
                             <img class="icon" :src="item.icon">{{item.msg}}
                         </router-link>
@@ -35,7 +37,7 @@
 
             </div>
         </nav>
-        <router-view></router-view>
+        <router-view class="router-view"></router-view>
         <transition-group name="fade">
             <div class="modal fade show" style="display: block" key="signInModal" v-show="signInModalVisible">
                 <div class="modal-dialog">
@@ -151,7 +153,7 @@
                         msg:"Home"
                     },
                     {
-                        to:"/",
+                        to:"/problem",
                         icon:require("@/assets/training.png"),
                         msg:"Problem"
                     },{
@@ -235,6 +237,9 @@
                 // 映射 this.token 为 store.state.token
                 'token','curUser'
             ])
+        },
+        mounted() {
+
         }
     }
 </script>
@@ -272,5 +277,18 @@
     }
     .fade-enter, .fade-leave-to{
         opacity: 0;
+    }
+    .router-view{
+        padding-top: 60px;
+        background-color: #e9ecef;
+    }
+    html{
+        background-color: #e9ecef;
+    }
+    .background{
+        padding: 1.5rem 2rem 0.2rem 2rem;
+        margin-top: 1rem;
+        background-color: #ffffff;
+        border-radius: 0.5rem;
     }
 </style>
