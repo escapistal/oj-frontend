@@ -37,6 +37,21 @@
                 style="border:0;z-index: 1000"
 >
         </mavon-editor>
+
+      </div>
+    </div>
+    <div v-if="showDetail" class="container" style="width: 80%">
+      <div class="background">
+        <div class="dropdown" style="display: flex;margin-bottom: 10px">
+          <button type="button" class="btn btn-light dropdown-toggle border rounded" data-toggle="dropdown">
+            <span class="text-left" style="width: 50px;display:inline-block;">{{lang}}</span>
+          </button>
+          <div class="dropdown-menu">
+            <div class="dropdown-item" :class="{'active':item==lang}" v-for="item in langList" @click="handleLangClick(item)">{{item}}</div>
+          </div>
+        </div>
+        <ace v-model="code" v-bind:lang="lang"></ace>
+        <button class="btn btn-secondary float-right" style="margin-top: 1em">submit</button>
       </div>
     </div>
   </div>
@@ -44,11 +59,13 @@
 
 <script>
   import pagenation from "../components/pagenation.vue";
+  import ace from '../components/ace-editor.vue'
   import ClipboardJS from 'clipboard/dist/clipboard.js'
   export default {
     name: "Problem",
     components: {
-      pagenation
+      pagenation,
+      ace
     },
     data: function () {
       return {
@@ -58,6 +75,11 @@
         pageSize:8,
         pageTotal:0,
         showDetail:false,
+        code:'',
+        lang:'C',
+        langList:[
+          'C','C++','Java'
+        ]
       }
     },
     created: function () {
@@ -113,6 +135,9 @@
         }
         else
           this.pageId=pageId
+      },
+      handleLangClick:function(lang){
+        this.lang=lang
       }
     },
     computed:{
@@ -161,5 +186,4 @@
     margin: 0 !important;
     border-radius: 0 !important;
   }
-
 </style>

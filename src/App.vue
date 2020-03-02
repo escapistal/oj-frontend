@@ -290,5 +290,6 @@
         margin-top: 1rem;
         background-color: #ffffff;
         border-radius: 0.5rem;
+        overflow:hidden;
     }
 </style>

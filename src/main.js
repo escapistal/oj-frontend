@@ -30,6 +30,9 @@ import 'clipboard/dist/clipboard.js'
 
 // Vue.use(VueClipboard)
 
+// import ace from 'ace-builds'
+// Vue.use(ace)
+
 Vue.config.productionTip = false
 
 new Vue({
