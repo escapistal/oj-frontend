@@ -112,11 +112,11 @@
                                 <input type="text" class="form-control" placeholder="Email" v-model="emailFirst"
                                        @input="handleAtInput">
                                 <div class="input-group-prepend">
-                                <span class="input-group-text">
+                                <span class="input-group-text" style="left: -1px;position: relative">
                                     @
                                 </span>
                                 </div>
-                                <input type="text" class="form-control" placeholder="xxx.com/cn/org/..." v-model="emailSecond"
+                                <input type="text" class="form-control" style="left: -1px" placeholder="xxx.com/cn/org/..." v-model="emailSecond"
                                        ref="inputEmailSecond">
                             </div>
                         </div>
@@ -157,9 +157,19 @@
                         icon:require("@/assets/training.png"),
                         msg:"Problem"
                     },{
-                        to:"/about",
+                        to:"/contest",
                         icon:require("@/assets/training.png"),
                         msg:"Contest"
+                    },
+                    {
+                        to:"/status",
+                        icon:require("@/assets/training.png"),
+                        msg:"Status"
+                    },
+                    {
+                        to:"/about",
+                        icon:require("@/assets/training.png"),
+                        msg:"About"
                     }
                 ]
             }
@@ -235,7 +245,7 @@
             },
             ...mapState([
                 // 映射 this.token 为 store.state.token
-                'token','curUser'
+                'curUser'
             ])
         },
         mounted() {
@@ -286,7 +296,10 @@
         background-color: #e9ecef;
     }
     .background{
-        padding: 1.5rem 2rem 0.2rem 2rem;
+        padding-top: 1.5rem;
+        padding-left: 2rem;
+        padding-right: 2rem;
+        padding-bottom: 0.2rem;
         margin-top: 1rem;
         background-color: #ffffff;
         border-radius: 0.5rem;

@@ -6,24 +6,24 @@
 
 <script>
   import ace from 'ace-builds'
-  import 'ace-builds/src-noconflict/snippets/javascript'
-  import 'ace-builds/src-noconflict/snippets/html'
-  import 'ace-builds/src-noconflict/snippets/css'
-  import 'ace-builds/src-noconflict/snippets/scss'
-  import 'ace-builds/src-noconflict/snippets/json'
-  import 'ace-builds/src-noconflict/snippets/java'
-  import 'ace-builds/src-noconflict/snippets/text'
-  import 'ace-builds/src-noconflict/snippets/c_cpp'
+
   import 'ace-builds/webpack-resolver'
   import 'ace-builds/src-noconflict/ext-language_tools'
   import 'ace-builds/src-noconflict/theme-chrome'
-  import 'ace-builds/src-noconflict/mode-javascript'
-  import 'ace-builds/src-noconflict/mode-c_cpp'
 
+  import 'ace-builds/src-noconflict/mode-c_cpp'
+  import 'ace-builds/src-noconflict/snippets/c_cpp'
+  import 'ace-builds/src-noconflict/mode-java'
+  import 'ace-builds/src-noconflict/snippets/java'
+  import 'ace-builds/src-noconflict/mode-python'
+  import 'ace-builds/src-noconflict/snippets/python'
   const modeArray = {
     'C':'ace/mode/c_cpp',
     'C++':'ace/mode/c_cpp',
-    'Java':'ace/mode/java'
+    'Java':'ace/mode/java',
+    'Python 2':'ace/mode/python',
+    'Python 3':'ace/mode/python',
+    'Python':'ace/mode/python'
   }
 
   export default {
@@ -41,7 +41,7 @@
         theme: this.themePath,
         mode: this.modeArray[this.lang],
         wrap: this.wrap,
-        snippets:this.snippetsPath,
+        // snippets:this.snippetsPath,
         showPrintMargin:this.showPrintMargin,
         tabSize: 4
       })
@@ -60,7 +60,7 @@
         showPrintMargin:false,
         themePath: 'ace/theme/chrome',
         modePath: 'ace/mode/c_cpp',
-        snippetsPath: 'ace/snippets/c_cpp',
+        // snippetsPath: 'ace/snippets/c_cpp',
         modeArray: modeArray,
       }
     },

@@ -6,17 +6,34 @@ Vue.use(VueRouter)
 
 const routes = [
   {
-    path: '/',
-    name: 'Home',
-    component: Home,
-    children:[
-
-    ]
-  },
-  {
     path: '/problem',
     name: 'Problem',
-    component: () => import(/* webpackChunkName: "about" */ '../views/Problem.vue')
+    component: () => import(/* webpackChunkName: "about" */ '../views/Problem.vue'),
+  },
+  {
+    path: '/problem/:id',
+    name: 'ProblemDetail',
+    component: () => import(/* webpackChunkName: "about" */ '../views/ProblemDetail.vue'),
+    props: true
+  },
+  {
+    path: '/contest',
+    name: 'Contest',
+    component: () => import(/* webpackChunkName: "about" */ '../views/Contest.vue'),
+  },
+  {
+    path: '/contest/:id',
+    name: 'ContestDetail',
+    component: () => import(/* webpackChunkName: "about" */ '../views/ContestDetail.vue'),
+    props: true
+  },
+  {
+    path: '/status',
+    name: 'Status',
+    // route level code-splitting
+    // this generates a separate chunk (about.[hash].js) for this route
+    // which is lazy-loaded when the route is visited.
+    component: () => import(/* webpackChunkName: "about" */ '../views/Status.vue')
   },
   {
     path: '/about',
@@ -25,6 +42,14 @@ const routes = [
     // this generates a separate chunk (about.[hash].js) for this route
     // which is lazy-loaded when the route is visited.
     component: () => import(/* webpackChunkName: "about" */ '../views/About.vue')
+  },
+  {
+    path: '/',
+    name: 'Home',
+    component: Home,
+    children:[
+
+    ]
   },
 ]
 

@@ -21,7 +21,7 @@ _axios.interceptors.request.use(
   config=> {
     // Do something before request is sent
     if(store.state.token)
-      config.headers.Authorization=store.state.token
+      config.headers.Authorization='Bearer '+store.state.token
     return config;
   },
   function(error) {

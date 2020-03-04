@@ -133,7 +133,7 @@
         computed :{
 
             ...mapState([
-                'token','curUser'
+                'curUser'
             ])
         }
     }
