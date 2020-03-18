@@ -97,7 +97,7 @@
       rate:function (a, b) {
           if (!b)
             return '0%'
-          return (a / b).toFixed(2)+'%'
+          return (a / b*100).toFixed(2)+'%'
       },
       showPage:function(pageId,forceUpdate){
         if(pageId=='...'||pageId<1||pageId>this.pageTotal)

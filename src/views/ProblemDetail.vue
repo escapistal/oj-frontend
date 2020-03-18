@@ -123,6 +123,9 @@
             'code':this.code
           }).then(response=>{
             console.log(response)
+            this.$toastr.success('提交成功')
+            console.log(this.curUser)
+            this.$router.push({ name: 'Status', params: { uid:this.curUser.id }})
           })
         }
       }

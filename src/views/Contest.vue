@@ -2,7 +2,31 @@
   <div class="container-fluid">
     <div class="row" style="margin:0 auto">
       <div class="col">
-        <div class="container">
+        <div class="row" v-if="curContestList.length>0">
+          <div class="container">
+            <div class="background">
+              <h4 class="text-left">Ongoing or upcoming</h4>
+              <div class="container">
+                <div class="card bg-light text-dark text-left" v-for="item in curContestList" :key="item.id">
+                  <div class="card-body">
+                    <h5 class="card-title">
+                      <router-link :to="'/contest/'+item.id">{{item.title}}</router-link>
+                      <img v-show="item.password=='set'" class="icon" src="@/assets/training.png">
+                      <span class="card-img" v-show="item.password=='set'">lock_img</span>
+                    </h5>
+                    <span class="card-text">{{timeRange(item.startTime,item.endTime)}}</span>
+                    <img class="icon" src="@/assets/training.png">
+                    <span class="card-text">{{timeDist(item.startTime,item.endTime)}}</span>
+                    <span class="card-text float-right">{{getStatus(item.startTime,item.endTime)}}</span>
+                    <!--                  <a href="#" class="card-link">Card link</a>-->
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="row">
+          <div class="container">
           <div class="background">
             <h4 class="text-left">Contests</h4>
             <div class="container">
@@ -17,7 +41,6 @@
                   <img class="icon" src="@/assets/training.png">
                   <span class="card-text">{{timeDist(item.startTime,item.endTime)}}</span>
                   <span class="card-text float-right">{{getStatus(item.startTime,item.endTime)}}</span>
-<!--                  <a href="#" class="card-link">Card link</a>-->
                 </div>
               </div>
             </div>
@@ -28,6 +51,7 @@
                     :show-page="showPage"
             ></pagenation>
           </div>
+        </div>
         </div>
       </div>
       <div class="col-md-2">
@@ -76,25 +100,36 @@
     },
     data: function () {
       return {
+        curContestList:[],
         contestList:[],
         pageId:1,
-        pageSize:8,
+        pageSize:10,
         pageTotal:0,
       }
     },
     created: function () {
+      this.$axios.get('/contest/list',{
+        params:{
+          state: 'current'
+        }
+      }).then(response=>{
+        console.log(response)
+          this.curContestList = response.data.data.content;
+      })
+
       this.pageId=this.contestPageId
       this.$axios.get('/contest/list',{
         params:{
           page: this.pageId - 1,
-          size: this.pageSize
+          size: this.pageSize,
+          state: 'ended'
         }
       }).then(response=>{
         console.log(response)
         this.pageTotal=response.data.data.totalPages
         if(this.pageTotal>0) {
           this.contestList = new Array(this.pageTotal)
-          this.contestList[0] = (response.data.data.content);
+          this.contestList[0] = response.data.data.content;
         }
       })
     },
@@ -180,6 +215,9 @@
 </script>
 
 <style scoped>
+  a{
+    color:black
+  }
   .card{
     margin-bottom: .75rem;
   }
