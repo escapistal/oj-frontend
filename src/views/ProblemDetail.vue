@@ -59,6 +59,10 @@
                 <td class="text-right info-right">{{problem.id}}</td>
               </tr>
               <tr>
+                <td class="text-left info-left">Name</td>
+                <td class="text-right info-right">{{problem.name}}</td>
+              </tr>
+              <tr>
                 <td class="text-left info-left">Timelimit</td>
                 <td class="text-right">{{problem.timeLimit}}ms
                   <button type="button" class="btn btn-sm dropdown-toggle dropdown-toggle-split" style="padding:0;width: 1rem" data-toggle="collapse" data-target="#timeFactor">
@@ -71,14 +75,62 @@
                   <table class="table" style="width:100%;margin-bottom: 0;">
                     <tr v-for="lang in problem.allowLanguage">
                       <td class="text-left info-left">{{lang.language}}</td>
-                      <td class="text-right info-right">x{{lang.factor}}</td>
+                      <td class="text-right info-right">{{Math.round(problem.timeLimit*lang.time_factor)}}ms</td>
                     </tr>
                   </table>
                 </td>
               </tr>
               <tr>
                 <td class="text-left info-left">Memorylimit</td>
-                <td class="text-right info-right">{{problem.memoryLimit}}mb</td>
+                <td class="text-right info-right">{{problem.memoryLimit}}mb
+                  <button type="button" class="btn btn-sm dropdown-toggle dropdown-toggle-split" style="padding:0;width: 1rem" data-toggle="collapse" data-target="#memoryFactor">
+                    <span class="sr-only"></span>
+                  </button>
+                </td>
+              </tr>
+              <tr id="memoryFactor" class="collapse">
+                <td colspan="2" style="padding: 0">
+                  <table class="table" style="width:100%;margin-bottom: 0;">
+                    <tr v-for="lang in problem.allowLanguage">
+                      <td class="text-left info-left">{{lang.language}}</td>
+                      <td class="text-right info-right">{{Math.round(problem.memoryLimit*lang.memory_factor)}}mb</td>
+                    </tr>
+                  </table>
+                </td>
+              </tr>
+              <tr v-if="problem.contest">
+                <td class="text-left info-left">Source</td>
+                <td class="text-right info-right">
+                  <router-link :to="'/contest/'+problem.contest.id">{{problem.contest.title.strip(15)}}</router-link>
+                </td>
+              </tr>
+              <tr>
+                <td class="text-left info-left">AC</td>
+                <td class="text-right info-right">{{problem.acceptedNumber}}</td>
+              </tr>
+              <tr>
+                <td class="text-left info-left">Submission</td>
+                <td class="text-right info-right">{{problem.submissionNumber}}</td>
+              </tr>
+              <tr>
+                <td class="text-left info-left">AC Rate</td>
+                <td class="text-right info-right">{{rate(problem.acceptedNumber,problem.submissionNumber)}}</td>
+              </tr>
+              <tr>
+                <td class="text-left info-left">Create At</td>
+                <td class="text-right info-right">{{problem.createTime}}</td>
+              </tr>
+              <tr>
+                <td class="text-left info-left">Create By</td>
+                <td class="text-right info-right">{{problem.createUser.nickname}}</td>
+              </tr>
+              <tr>
+                <td class="text-left info-left">Update At</td>
+                <td class="text-right info-right">{{problem.updateTime}}</td>
+              </tr>
+              <tr>
+                <td class="text-left info-left">Update By</td>
+                <td class="text-right info-right">{{problem.updateUser.nickname}}</td>
               </tr>
               </tbody>
             </table>
@@ -101,7 +153,9 @@
     data: function () {
       return {
         problem: {
-          title:''
+          title:'',
+          createUser:{},
+          updateUser:{}
         },
         code: '',
         lang: 'Python 3',
@@ -117,7 +171,9 @@
         else{
           this.$axios.post('/submission/submit',{
             'contestId':0,
-            'problemId':this.id,
+            'problem':{
+              'id':this.id
+            },
             'user':this.curUser,
             'language':this.lang,
             'code':this.code
@@ -128,7 +184,12 @@
             this.$router.push({ name: 'Status', params: { uid:this.curUser.id }})
           })
         }
-      }
+      },
+      rate:function (a, b) {
+        if (!b)
+          return '0%'
+        return (a / b*100).toFixed(2)+'%'
+      },
     },
     beforeRouteEnter: function (to, from, next) {
       next(vm =>{

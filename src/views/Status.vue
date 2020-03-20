@@ -43,6 +43,7 @@
                 <th scope="col">Time</th>
                 <th scope="col">Memory</th>
                 <th scope="col">Code Len</th>
+                <th scope="col">Source</th>
               </tr>
               </thead>
               <tbody>
@@ -50,7 +51,11 @@
                 <td>{{item.id}}</td>
                 <td>{{item.createTime}}</td>
                 <td>{{item.user.nickname}}</td>
-                <td><router-link :to="'/problem/'+item.problemId">{{item.problemId}}</router-link></td>
+                <td>
+                  <router-link :to="'/problem/'+item.problem.id">
+                    {{item.problem.name+". "+item.problem.title}}
+                  </router-link>
+                </td>
                 <td>{{item.language}}</td>
                 <td>
                   <span v-if="item.status=='PENDING'" class="badge badge-secondary">{{item.status}}</span>
@@ -63,7 +68,10 @@
                 <td>{{item.executeTime}}</td>
                 <td>{{item.executeMemory}}</td>
                 <td>{{item.codeLength}}</td>
-
+                <td v-if="item.problem.contest">
+                  <router-link :to="'/contest/'+item.problem.contest.id">{{item.problem.contest.title.strip(30)}}</router-link>
+                </td>
+                <td v-else>题库</td>
               </tr>
               </tbody>
             </table>

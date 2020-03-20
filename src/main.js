@@ -34,6 +34,24 @@ import 'clipboard/dist/clipboard.js'
 // Vue.use(ace)
 
 Vue.config.productionTip = false
+
+String.prototype.strip=function(maxlen){
+  if(this.replace(/[\u0391-\uFFE5]/g,"aa").length>maxlen) {
+    let len=0
+    for (let i=0;i<this.length;i++) {
+      if ((this.charCodeAt(i) & 0xff00) != 0)
+        ++len
+      ++len
+      if(len>=maxlen) {
+        return this.substr(0,i)+'...'
+        break
+      }
+    }
+  }
+  return this
+}
+
+
 Date.prototype.format = function (fmt) {
   const o = {
     "M+": this.getMonth() + 1, //月份
