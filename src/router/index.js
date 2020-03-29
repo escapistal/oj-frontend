@@ -23,9 +23,43 @@ const routes = [
   },
   {
     path: '/contest/:id',
-    name: 'ContestDetail',
+    // name: 'ContestDetail',
     component: () => import(/* webpackChunkName: "about" */ '../views/ContestDetail.vue'),
-    props: true
+    props: true,
+    children:[
+      {
+        path:'',
+        name:'ContestOverview',
+        component: () => import(/* webpackChunkName: "about" */ '../views/ContestOverview.vue'),
+      },
+      {
+        path:'clarification',
+        name:'ContestClarification',
+        component: () => import(/* webpackChunkName: "about" */ '../views/ContestClarification.vue')
+      },
+      {
+        path:'problemset',
+        name:'ContestProblemSet',
+        component: () => import(/* webpackChunkName: "about" */ '../views/ContestProblemSet.vue')
+      },
+      {
+        path:'status',
+        name:'ContestStatus',
+        component: () => import(/* webpackChunkName: "about" */ '../views/ContestStatus.vue'),
+        props:true
+      },
+      {
+        path:'rank',
+        name:'ContestRank',
+        component: () => import(/* webpackChunkName: "about" */ '../views/ContestRank.vue')
+      },
+      {
+        path:'problem/:pid',
+        name:'ContestProblem',
+        component: () => import(/* webpackChunkName: "about" */ '../views/ContestProblem.vue'),
+        props:true
+      }
+    ]
   },
   {
     path: '/status',

@@ -296,11 +296,8 @@
         background-color: #e9ecef;
     }
     .background{
-        padding-top: 1.5rem;
-        padding-left: 2rem;
-        padding-right: 2rem;
-        padding-bottom: 0.2rem;
-        margin-top: 1rem;
+      padding: 1.5rem 2rem 0.2rem;
+      margin-top: 1rem;
         background-color: #ffffff;
         border-radius: 0.5rem;
         overflow:hidden;

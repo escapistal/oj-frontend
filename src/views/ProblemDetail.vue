@@ -52,7 +52,7 @@
         <div class="col-md-2" style="padding: 0">
           <div class="container background" style="padding: .5rem 0">
             <h6>Information</h6>
-            <table class="table table-sm">
+            <table class="table table-sm" style="margin-bottom: 0">
               <tbody>
               <tr>
                 <td class="text-left info-left">ID</td>

@@ -40,7 +40,12 @@
                   <span class="card-text">{{timeRange(item.startTime,item.endTime)}}</span>
                   <img class="icon" src="@/assets/training.png">
                   <span class="card-text">{{timeDist(item.startTime,item.endTime)}}</span>
-                  <span class="card-text float-right">{{getStatus(item.startTime,item.endTime)}}</span>
+                  <span class="card-text float-right">
+<!--                    <span v-if="new Date()<item.startTime" class="badge badge-secondary">{{getStatus(item.startTime,item.endTime)}}</span>-->
+                    <span v-if="new Date()<item.startTime" class="badge badge-primary">Pending</span>
+                    <span v-else-if="new Date()<item.endTime" class="badge badge-success">Running</span>
+                    <span v-else class="badge badge-secondary">Ended</span>
+                  </span>
                 </div>
               </div>
             </div>
@@ -143,7 +148,6 @@
       },
       timeDist:function(d1,d2){
         let dis=new Date(d2).getTime()-new Date(d1).getTime()
-        console.log(dis)
         dis=Math.round(dis/60000)
         let ret='',t=0
         if(dis>=24*60) {

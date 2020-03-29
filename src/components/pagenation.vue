@@ -1,13 +1,11 @@
 <template>
   <ul class="pagination">
-<!--    <li class="page-item ml-auto" @click="showPage(1,false)"><a class="page-link" href="#">首页</a></li>-->
-    <li class="page-item" :class="{'disabled':pageId==1}"@click="showPage(pageId-1,false)"><a class="page-link" href="#"><<</a></li>
+    <li class="page-item" :class="{'disabled':pageId==1}"@click="showPage(pageId-1,false)"><span class="page-link btn"><<</span></li>
     <li class="page-item" :class="{'active':id==pageId}" style="min-width: 42px;"
         v-for="id in pageIds" @click="showPage(id,false)">
-      <a class="page-link" href="#">{{id}}</a>
+      <span class="page-link btn">{{id}}</span>
     </li>
-    <li class="page-item" :class="{'disabled':pageId==pageTotal}" @click="showPage(pageId+1,false)"><a class="page-link" href="#">>></a></li>
-<!--    <li class="page-item" @click="showPage(pageTotal,false)"><a class="page-link" href="#">末页</a></li>-->
+    <li class="page-item" :class="{'disabled':pageId==pageTotal}" @click="showPage(pageId+1,false)"><span class="page-link btn">>></span></li>
   </ul>
 </template>
 

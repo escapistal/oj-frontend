@@ -6,15 +6,20 @@
           <div class="container">
             <div class="background">
               <h4 class="text-left">Problems</h4>
-              <table class="table table-hover">
-                <thead></thead>
+              <table class="table table-hover text-left">
+                <thead>
+                <th>#</th>
+                <th>Title</th>
+                <th>ACs</th>
+                <th>AC Rate</th>
+                </thead>
                 <tbody>
-                <tr v-for="item in problemList[pageId-1]" :key="item.id">
+                <tr v-for="item in problemList[pageId-1]" :key="item.id" @click="$router.push('/problem/'+item.id)">
                   <td class="text-left" style="width: 10%; padding:.5rem .75rem;">
-                    <router-link :to="'/problem/'+item.id" class="router-link">{{item.name}}</router-link>
+                    <span class="btn">{{item.name}}</span>
                   </td>
                   <td class="text-left" style="width: 60%; padding:.5rem .75rem">
-                    <router-link :to="'/problem/'+item.id" class="router-link">{{item.title}}</router-link>
+                    <span class="btn">{{item.title}}</span>
                   </td>
                   <td class="text-left" style="vertical-align:center !important;">{{item.acceptedNumber}}</td>
                   <td class="text-left" style="vertical-align:center !important;">{{rate(item.acceptedNumber,item.submissionNumber)}}</td>
@@ -137,16 +142,6 @@
 <style scoped>
   .router-link{
     color:black
-  }
-
-  .btn:hover{
-    background-color: #e9ecef;
-    color: #57a3f3;
-  }
-
-  .btn:focus{
-    box-shadow: unset;
-    -webkit-box-shadow: unset;
   }
 
   .table td{
