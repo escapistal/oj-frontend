@@ -24,15 +24,20 @@ export default new Vuex.Store({
     }
   },
   getters: {
-    doneTodos: state => {
-      return state.todos.filter(todo => todo.done)
-    }
+    // doneTodos: state => {
+    //   return state.todos.filter(todo => todo.done)
+    // }
   },
   mutations: {
     login(state,data){
       state.token=data.token
       delete data.token
       state.curUser=data
+    },
+    logout(state){
+      state.token=undefined
+      state.curUser=undefined
+      state.contestProblems=[]
     },
     changeProblemPageId(state,data){
       state.problemPageId=data

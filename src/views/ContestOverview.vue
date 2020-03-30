@@ -82,8 +82,7 @@
       }
     },
     created:function () {
-      // console.log(this.$route.params)
-      // this.contest=this.$route.params.contest;
+
     },
     computed:{
 

@@ -5,10 +5,17 @@
         <h4 class="text-left">Submissions</h4>
         <div class="col">
           <div class="input-group">
+            <section class="model-7">
+              <div class="checkbox">
+                <input type="checkbox" style="height: 100%" v-model="mine" @change="handleFilterChange" />
+                <label style="top:8px;line-height: 17px;" :class="mine?'text-left':'text-right'">
+                  <span :style="mine?'padding-left: 2px;':'padding-right:5px;'">{{mine?' mine':'all'}}</span>
+                </label>
+              </div></section>
             <div class="input-group-prepend">
               <span class="input-group-text">User</span>
             </div>
-            <input type="text" class="form-control" v-model="uname" @change="handleFilterChange">
+            <input type="text" class="form-control" v-model="uname" @change="handleFilterChange" :disabled="mine">
             <div class="input-group-prepend">
               <span class="input-group-text">Problem</span>
             </div>
@@ -112,6 +119,8 @@
         status:'',
         lang:'',
         refreshing:false,
+        updating:false,
+        mine:true,
         statusList:[
           {msg:'Accepted',value:'AC'},
           {msg:'Wrong Answer',value:'WA'},
@@ -142,8 +151,8 @@
         return
       }
       await this.$store.dispatch('loadContestProblems',{id:this.$route.params.id})
-      if(this.$route.params.uname) {
-        this.uname = this.$route.params.uname
+      if(this.$route.params.mine!==undefined) {
+        this.mine = this.$route.params.mine
       }
       if(this.$route.params.pid) {
         this.pid = this.$route.params.pid
@@ -153,7 +162,7 @@
           page: this.pageId - 1,
           size: this.pageSize,
           cid:this.cid,
-          uid:this.uid,
+          uid:this.mine?this.curUser.id:undefined,
           uname:this.uname,
           pid:this.pid,
           status:this.status,
@@ -181,7 +190,10 @@
         }, depth)
       },
       handleFilterChange:function(){
-        this.showPage(this.pageId,true)
+        if(this.refreshing)
+          this.$toastr.warning('你的操作太快啦')
+        else
+          this.showPage(this.pageId,true)
       },
       showPage:function(pageId,forceUpdate){
         if(pageId==='...'||pageId<1||pageId>this.pageTotal)
@@ -193,7 +205,7 @@
               page: this.pageId - 1,
               size: this.pageSize,
               cid:this.cid,
-              uid:this.uid,
+              uid:this.mine?this.curUser.id:undefined,
               uname:this.uname,
               pid:this.pid,
               status:this.status,
@@ -232,5 +244,106 @@
 </script>
 
 <style scoped>
+  .checkbox {
+    position: relative;
+    display: inline-block;
+    font-size: 13px;
+    overflow: hidden;
+  }
+  .checkbox:after, .checkbox:before {
+    /*font-family: FontAwesome;*/
+    -webkit-font-feature-settings: normal;
+    -moz-font-feature-settings: normal;
+    font-feature-settings: normal;
+    -webkit-font-kerning: auto;
+    -moz-font-kerning: auto;
+    font-kerning: auto;
+    -webkit-font-language-override: normal;
+    -moz-font-language-override: normal;
+    font-language-override: normal;
+    font-stretch: normal;
+    font-style: normal;
+    font-synthesis: weight style;
+    font-variant: normal;
+    font-weight: normal;
+    text-rendering: auto;
+  }
+  .checkbox label {
+    width: 55px;
+    height: 23px;
+    background: #ccc;
+    position: relative;
+    display: inline-block;
+    border-radius: 25px;
+    -webkit-transition: 0.4s;
+    transition: 0.4s;
+  }
+  .checkbox label:after {
+    content: '';
+    position: absolute;
+    width: 35px;
+    height: 27px;
+    border-radius: 100%;
+    left: 0;
+    top: -5px;
+    z-index: 2;
+    background: #fff;
+    box-shadow: 0 0 5px rgba(0, 0, 0, 0.2);
+    -webkit-transition: 0.4s;
+    transition: 0.4s;
+  }
+  .checkbox input {
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 5;
+    opacity: 0;
+    cursor: pointer;
+  }
+  .checkbox input:hover + label:after {
+    box-shadow: 0 2px 15px 0 rgba(0, 0, 0, 0.2), 0 3px 8px 0 rgba(0, 0, 0, 0.15);
+  }
+  .checkbox input:checked + label:after {
+    /*content: 'all';*/
+    left: 30px;
+  }
+  .model-7 .checkbox label {
+    background: none;
+    border: 3px solid #555;
+    height: 24px;
+  }
+  .model-7 .checkbox label:after {
+    /*content: 'mine';*/
+    background: #555;
+    box-shadow: none;
+    top: 1px;
+    left: 1px;
+    width: 16px;
+    height: 16px;
+  }
+  .model-7 .checkbox input:checked + label {
 
+    border-color: #329043;
+  }
+  .model-7 .checkbox input:checked + label:after {
+    background: #3eb454;
+    left: 32px;
+  }
+  /*.model-7 .checkbox:after {*/
+  /*  content: '123';*/
+  /*  color: #000000;*/
+  /*  position: relative;*/
+  /*  right: 15px;*/
+  /*  bottom: 7px;*/
+  /*}*/
+  /*.model-7 .checkbox:before {*/
+  /*  content: '456';*/
+  /*  position: relative;*/
+  /*  left: 17px;*/
+  /*  bottom: 7px;*/
+  /*  color: #000000;*/
+  /*  z-index: 1;*/
+  /*}*/
 </style>

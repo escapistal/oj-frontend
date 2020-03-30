@@ -22,11 +22,11 @@
                             {{curUser.nickname}}
                         </a>
                         <div class="dropdown-menu" style="left:unset;right:0;min-width:unset;padding: .25rem 0">
-                            <a v-if="curUser.role.indexOf('admin')!=-1" class="dropdown-item" href="#">Management</a>
-                            <a class="dropdown-item" href="#">Profile</a>
-                            <a class="dropdown-item" href="#">Settings</a>
-                            <a class="dropdown-item" href="#">Stats</a>
-                            <a class="dropdown-item" style="border-top: 1px solid rgba(0, 0, 0, .15) !important;" href="#">Logout</a>
+                            <span v-if="curUser.role.indexOf('admin')!=-1" class="dropdown-item btn">Management</span>
+                            <span class="dropdown-item btn">Profile</span>
+                            <span class="dropdown-item btn">Settings</span>
+                            <span class="dropdown-item btn">Stats</span>
+                            <span class="dropdown-item btn" style="border-top: 1px solid rgba(0, 0, 0, .15) !important;" @click="handleLogoutClick">Logout</span>
                         </div>
                     </li>
                 </ul>
@@ -237,6 +237,9 @@
                         this.$refs.inputEmailSecond.focus()
                     })
                 }
+            },
+            handleLogoutClick:function () {
+                this.$store.commit('logout')
             }
         },
         computed: {

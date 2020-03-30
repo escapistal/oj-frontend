@@ -88,7 +88,7 @@
             console.log(response)
             this.$toastr.success('提交成功')
             console.log(this.curUser)
-            this.$router.push({ name: 'ContestStatus', params: { uname:this.curUser.realname }})
+            this.$router.push({ name: 'ContestStatus', params: { mine:true }})
           })
         }
       },
