@@ -21,7 +21,9 @@ export default new Vuex.Store({
     contestProblem:{
       createUser:{},
       updateUser:{}
-    }
+    },
+    annos:[],
+    clars:[]
   },
   getters: {
     // doneTodos: state => {
@@ -53,6 +55,12 @@ export default new Vuex.Store({
     },
     setContestProblem(state,data){
       state.contestProblem=data
+    },
+    setAnnos(state,data){
+      state.annos=data
+    },
+    setClars(state,data){
+      state.clars=data
     }
   },
   actions: {
@@ -85,6 +93,18 @@ export default new Vuex.Store({
       }
       else
         Vue.prototype.$toastr.warning(res.data.msg)
+    },
+    loadAnnosAndClars:async function({dispatch,commit,state},payload){
+      let res1 = await Vue.prototype.$axios.get('/contestAnnouncement/list/'+payload.id,{})
+      if(res1.data.status==0)
+        commit('setAnnos',res1.data.data)
+      else
+        Vue.prototype.$toastr.warning(res1.data.msg)
+      let res2 = await Vue.prototype.$axios.get('/clarification/list/'+payload.id,{})
+      if(res1.data.status==0)
+        commit('setClars',res2.data.data)
+      else
+        Vue.prototype.$toastr.warning(res2.data.msg)
     }
   },
   modules: {

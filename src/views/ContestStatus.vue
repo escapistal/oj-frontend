@@ -55,7 +55,7 @@
 <!--          <th scope="col">Source</th>-->
         </tr>
         </thead>
-        <tbody>
+        <tbody v-if="submissionList[pageId-1]">
         <tr v-for="item in submissionList[pageId-1]" :key="item.id">
           <td>{{item.id}}</td>
           <td>{{item.createTime}}</td>
