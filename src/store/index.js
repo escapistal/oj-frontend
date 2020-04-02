@@ -20,7 +20,8 @@ export default new Vuex.Store({
     contestProblems:[],
     contestProblem:{
       createUser:{},
-      updateUser:{}
+      updateUser:{},
+      allowLanguage:[]
     },
     annos:[],
     clars:[],
