@@ -22,11 +22,19 @@
         <div class="container">
           <div class="background"  style="padding: 0">
             <div class="progress text-center" style="background-color: #ffffff;">
-              <div class="timebar">{{bartext}}</div>
-              <div class="progress-bar progress-bar-striped progress-bar-animated" role="progressbar"
+
+              <div class="progress-bar progress-bar-striped progress-bar-animated bg-dark" role="progressbar"
                    :style="{width: progress+'%'}">
+                <div class="timebar">{{bartext}}</div>
               </div>
             </div>
+          </div>
+        </div>
+        <div class="container" v-show="newclar&&$route.name!=='ContestClarificationDetail'&&$route.name!=='ContestClarification'">
+          <div class="background font-weight-bold" style="padding: 0">
+            <router-link :to="'/contest/'+contest.id+'/clarification'">
+              New Clarification Response, Click to see
+            </router-link>
           </div>
         </div>
         <router-view></router-view>
@@ -145,11 +153,11 @@
     props:['id'],
     data:function () {
       return {
-        // contest:{},
-        // startTick:0,
-        // endTick:0,
         tick:0,
         routerSelectId:0,
+        newclar:false,
+        countdownExist:false,
+        refreshExist:false,
         nav:[
           {
             msg:"Overview",
@@ -182,13 +190,30 @@
     methods:{
       countdown(){
         this.tick = new Date().getTime()
-        if (this.endTick&&this.tick > this.endTick) {
+        if (this.endTick&&this.tick > this.endTick||!this.$route.path.startsWith('/contest/')) {
+          this.countdownExist=false
           return
         }
         const that = this
         setTimeout(function () {
           that.countdown()
         }, 100)
+      },
+      refreshAnnosAndClars: async function () {
+        if(!this.$route.path.startsWith('/contest/')) {
+          this.refreshExist=false
+          return
+        }
+        await this.$store.dispatch('loadAnnosAndClars', {id: this.$route.params.id})
+        let has=false
+        for(let i=0;i<this.clars.length;i++)
+          if(!this.clars[i].readByUser)
+            has=true
+        this.newclar=has
+        const that = this
+        setTimeout(function () {
+          that.refreshAnnosAndClars()
+        }, 60000)
       },
       rate:function (a, b) {
         if (!b)
@@ -222,7 +247,7 @@
         let hr = parseInt(msec / 60 / 60 % 24)
         let min = parseInt(msec / 60 % 60)
         let sec = parseInt(msec % 60)
-        return ret+day+':'+(hr > 9 ? hr : '0' + hr)+':'+(min > 9 ? min : '0' + min)+':'+(sec > 9 ? sec : '0' + sec)
+        return ret+(day?day+":":"")+(hr > 9 ? hr : '0' + hr)+':'+(min > 9 ? min : '0' + min)+':'+(sec > 9 ? sec : '0' + sec)
       },
       startTick:function () {
         return new Date(this.contest.startTime).getTime()
@@ -232,19 +257,35 @@
       },
       ...mapState([
         // 映射
-        'curUser','contestProblem','contest'
+        'curUser','contestProblem','contest','clars'
       ])
     },
     beforeRouteEnter: function (to,from,next) {
       next(async vm => {
           await vm.$store.dispatch('loadContest',{id:vm.$route.params.id})
-          vm.countdown()
+          if(!vm.countdownExist) {
+            vm.countdownExist=true
+            vm.countdown()
+          }
+          //await vm.$store.dispatch('loadAnnosAndClars',{id:vm.$route.params.id})
+          if(!vm.refreshExist) {
+            vm.refreshExist=true
+            vm.refreshAnnosAndClars()
+          }
         }
       )
     },
     beforeRouteUpdate: async function (to,from,next) {
       await this.$store.dispatch('loadContest',{id:to.params.id})
-      this.countdown()
+      if(!this.countdownExist) {
+        this.countdownExist = true
+        this.countdown()
+      }
+      //await this.$store.dispatch('loadAnnosAndClars',{id:to.params.id})
+      if(!this.refreshExist) {
+        this.refreshExist = true
+        this.refreshAnnosAndClars()
+      }
       next()
     }
 
@@ -267,6 +308,7 @@
     left: 0;
     right: 0;
     text-align: center;
+    mix-blend-mode: difference;
     /*transform: translate(0, -50%);*/
   }
 

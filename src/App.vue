@@ -15,12 +15,12 @@
                         </router-link>
                     </li>
                 </ul>
-                <ul v-if="curUser" class="navbar-nav ml-auto">
+                <ul v-if="curUser.id" class="navbar-nav ml-auto">
                     <li class="nav-item dropdown">
-                        <a class="nav-link dropdown-toggle" href="#" id="navbardrop" data-toggle="dropdown">
+                        <span class="nav-link dropdown-toggle" id="navbardrop" data-toggle="dropdown">
                             <img class="icon" src="@/assets/training.png">
                             {{curUser.nickname}}
-                        </a>
+                        </span>
                         <div class="dropdown-menu" style="left:unset;right:0;min-width:unset;padding: .25rem 0">
                             <span v-if="curUser.role.indexOf('admin')!=-1" class="dropdown-item btn">Management</span>
                             <span class="dropdown-item btn">Profile</span>
@@ -299,8 +299,8 @@
         background-color: #e9ecef;
     }
     .background{
-      padding: 1.5rem 2rem 0.2rem;
-      margin-top: 1rem;
+        padding: 1.5rem 2rem 0.2rem;
+        margin-top: 1rem;
         background-color: #ffffff;
         border-radius: 0.5rem;
         overflow:hidden;

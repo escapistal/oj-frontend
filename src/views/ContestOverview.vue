@@ -77,7 +77,6 @@
           if(dis>1)
             ret+='s'
         }
-        console.log(ret)
         return ret.trim()
       }
     },

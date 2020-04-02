@@ -58,6 +58,11 @@ const routes = [
         name:'ContestProblem',
         component: () => import(/* webpackChunkName: "about" */ '../views/ContestProblem.vue'),
         props:true
+      },
+      {
+        path:'clarification/:clarid',
+        name:'ContestClarificationDetail',
+        component: () => import(/* webpackChunkName: "about" */ '../views/ContestClarificationDetail.vue'),
       }
     ]
   },

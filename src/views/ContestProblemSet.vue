@@ -59,6 +59,7 @@
     },
     beforeRouteUpdate: async function (to,from,next) {
       await this.$store.dispatch('loadContestProblems',{id:to.params.id})
+      next()
     }
   }
 </script>

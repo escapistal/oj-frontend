@@ -118,7 +118,6 @@
           state: 'current'
         }
       }).then(response=>{
-        console.log(response)
           this.curContestList = response.data.data.content;
       })
 
@@ -130,7 +129,6 @@
           state: 'ended'
         }
       }).then(response=>{
-        console.log(response)
         this.pageTotal=response.data.data.totalPages
         if(this.pageTotal>0) {
           this.contestList = new Array(this.pageTotal)
@@ -169,7 +167,6 @@
           if(dis>1)
             ret+='s'
         }
-        console.log(ret)
         return ret.trim()
       },
       getStatus:function(d1,d2){
@@ -192,7 +189,6 @@
               size: this.pageSize
             }
           }).then(response=>{
-            console.log(response)
             if(response.data.data.totalPages>this.pageTotal) {
               this.pageTotal=response.data.data.totalPages
               this.contestList = new Array(this.pageTotal)

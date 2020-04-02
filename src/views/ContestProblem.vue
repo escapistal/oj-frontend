@@ -50,7 +50,6 @@
 
   export default {
     name: "ContestProblem",
-    props: ['id','pid'],
     components: {
       ace
     },
@@ -79,7 +78,7 @@
               'id':this.problem.contest.id
             },
             'problem':{
-              'id':this.pid
+              'id':this.problem.id
             },
             'user':this.curUser,
             'language':this.lang,
@@ -104,7 +103,9 @@
         new ClipboardJS('.btn');
       })
     },
-    beforeRouteUpdate: function(to, from, next){
+    beforeRouteUpdate: async function (to, from, next) {
+      await this.$store.dispatch('loadContestProblem', {id: to.params.pid})
+      new ClipboardJS('.btn');
       next()
     },
     computed: {

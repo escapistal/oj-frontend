@@ -178,15 +178,14 @@
       })
     },
     methods:{
-      refresh:function(depth){
-        console.log(depth)
-        if(this.$route.name!=='ContestStatus'||depth>=30*60*1000)
+      refresh: async function (depth) {
+        if (this.$route.name !== 'ContestStatus' || depth >= 30 * 60 * 1000)
           return
-        if(!this.refreshing)
-          this.showPage(this.pageId,true)
+        if (!this.refreshing)
+          await this.showPage(this.pageId, true)
         const that = this
         setTimeout(function () {
-          that.refresh(depth*1.5)
+          that.refresh(depth * 1.5)
         }, depth)
       },
       handleFilterChange:function(){
@@ -195,34 +194,33 @@
         else
           this.showPage(this.pageId,true)
       },
-      showPage:function(pageId,forceUpdate){
-        if(pageId==='...'||pageId<1||pageId>this.pageTotal)
+      showPage: async function (pageId, forceUpdate) {
+        if (pageId === '...' || pageId < 1 || pageId > this.pageTotal)
           return
-        if(forceUpdate||!this.contestList[pageId-1]){
-          this.refreshing=true
-          this.$axios.get('/contestSubmission/list',{
-            params:{
+        if (forceUpdate || !this.contestList[pageId - 1]) {
+          this.refreshing = true
+          await this.$axios.get('/contestSubmission/list', {
+            params: {
               page: this.pageId - 1,
               size: this.pageSize,
-              cid:this.cid,
-              uid:this.mine?this.curUser.id:undefined,
-              uname:this.uname,
-              pid:this.pid,
-              status:this.status,
-              lang:this.lang
+              cid: this.cid,
+              uid: this.mine ? this.curUser.id : undefined,
+              uname: this.uname,
+              pid: this.pid,
+              status: this.status,
+              lang: this.lang
             }
-          }).then(response=>{
-            this.refreshing=false
+          }).then(response => {
+            this.refreshing = false
             console.log(response)
-            if(response.data.data.totalPages>this.pageTotal) {
+            if (response.data.data.totalPages > this.pageTotal) {
               this.pageTotal = response.data.data.totalPages
               this.submissionList = new Array(this.pageTotal)
             }
-            this.$set(this.submissionList,pageId-1,response.data.data.content)
-            this.pageId=pageId
+            this.$set(this.submissionList, pageId - 1, response.data.data.content)
+            this.pageId = pageId
           })
-        }
-        else {
+        } else {
           this.pageId = pageId
         }
       }
