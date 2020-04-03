@@ -19,7 +19,7 @@
 <!--      {{tick}}-->
 <!--      {{endTick}}-->
       <div class="col">
-        <div class="container">
+        <div class="container-fluid">
           <div class="background"  style="padding: 0">
             <div class="progress text-center" style="background-color: #ffffff;">
 
@@ -43,10 +43,10 @@
       <div class="col-md-2 show" style="padding: 0" id="bar">
         <div class="container background" style="padding: 0">
           <div class="btn-group-vertical" style="width: 100%">
-            <button v-for="item in nav" type="button" class="btn border text-left">
-              <router-link :to="'/contest/'+contest.id+item.to" style="color:#000;">
+            <button v-for="item in nav" type="button" class="btn border text-left" @click="handleNavClick(item)">
+<!--              <router-link :to="'/contest/'+contest.id+item.to" style="color:#000;">-->
                 <img class="icon" :src="item.icon">{{item.msg}}
-              </router-link>
+<!--              </router-link>-->
             </button>
           </div>
         </div>
@@ -156,8 +156,8 @@
         tick:0,
         routerSelectId:0,
         newclar:false,
-        countdownExist:false,
-        refreshExist:false,
+        countdownInterval:undefined,
+        refreshInterval:undefined,
         nav:[
           {
             msg:"Overview",
@@ -188,37 +188,13 @@
       }
     },
     methods:{
-      countdown(){
-        this.tick = new Date().getTime()
-        if (this.endTick&&this.tick > this.endTick||!this.$route.path.startsWith('/contest/')) {
-          this.countdownExist=false
-          return
-        }
-        const that = this
-        setTimeout(function () {
-          that.countdown()
-        }, 100)
-      },
-      refreshAnnosAndClars: async function () {
-        if(!this.$route.path.startsWith('/contest/')) {
-          this.refreshExist=false
-          return
-        }
-        await this.$store.dispatch('loadAnnosAndClars', {id: this.$route.params.id})
-        let has=false
-        for(let i=0;i<this.clars.length;i++)
-          if(!this.clars[i].readByUser)
-            has=true
-        this.newclar=has
-        const that = this
-        setTimeout(function () {
-          that.refreshAnnosAndClars()
-        }, 60000)
-      },
       rate:function (a, b) {
         if (!b)
           return '0%'
         return (a / b*100).toFixed(2)+'%'
+      },
+      handleNavClick:function (item) {
+        this.$router.push({path:'/contest/'+this.contest.id+item.to})
       }
     },
     computed:{
@@ -261,31 +237,57 @@
       ])
     },
     beforeRouteEnter: function (to,from,next) {
+      console.log('enter from '+from.path+' to '+to.path)
       next(async vm => {
           await vm.$store.dispatch('loadContest',{id:vm.$route.params.id})
-          if(!vm.countdownExist) {
-            vm.countdownExist=true
-            vm.countdown()
-          }
-          //await vm.$store.dispatch('loadAnnosAndClars',{id:vm.$route.params.id})
-          if(!vm.refreshExist) {
-            vm.refreshExist=true
-            vm.refreshAnnosAndClars()
-          }
+          await vm.$store.dispatch('loadAnnosAndClars', {id: vm.$route.params.id})
+          const that=vm
+          vm.countdownInterval = setInterval(function () {
+            that.tick = new Date().getTime();
+          },100)
+          vm.refreshInterval = setInterval(async function () {
+            let has=false
+            for(let i=0;i<that.clars.length;i++)
+              if(!that.clars[i].readByUser)
+                has=true
+            that.newclar=has
+          },60000)
         }
       )
     },
     beforeRouteUpdate: async function (to,from,next) {
+      console.log('update from '+from.path+' to '+to.path)
+      if(from.params.id===to.params.id){
+        console.log('pass')
+        next()
+        return
+      }
       await this.$store.dispatch('loadContest',{id:to.params.id})
-      if(!this.countdownExist) {
-        this.countdownExist = true
-        this.countdown()
-      }
-      //await this.$store.dispatch('loadAnnosAndClars',{id:to.params.id})
-      if(!this.refreshExist) {
-        this.refreshExist = true
-        this.refreshAnnosAndClars()
-      }
+      await this.$store.dispatch('loadAnnosAndClars', {id: to.params.id})
+      if(this.countdownInterval)
+        await clearInterval(this.countdownInterval)
+      if(this.refreshInterval)
+        await clearInterval(this.refreshInterval)
+      const that=this
+      that.countdownInterval = setInterval(function () {
+        that.tick = new Date().getTime();
+      },100)
+      that.refreshInterval = setInterval(async function () {
+        await that.$store.dispatch('loadAnnosAndClars', {id: that.$route.params.id})
+        let has=false
+        for(let i=0;i<that.clars.length;i++)
+          if(!that.clars[i].readByUser)
+            has=true
+        that.newclar=has
+      },60000)
+      next()
+    },
+    beforeRouteLeave:function (to,from,next) {
+      console.log('leave from '+from.path+' to '+to.path)
+      if(this.countdownInterval)
+        clearInterval(this.countdownInterval)
+      if(this.refreshInterval)
+        clearInterval(this.refreshInterval)
       next()
     }
 
@@ -319,13 +321,5 @@
     height: 100%;
     padding: 5px;
   }
-  /*.progress-bar-striped {*/
-  /*  background-image: linear-gradient(45deg, rgba(255, 255, 255, 0.15) 25%, transparent 25%, transparent 50%, rgba(255, 255, 255, 0.15) 50%, rgba(255, 255, 255, 0.15) 75%, transparent 75%, transparent);*/
-  /*  background-size: 1rem 1rem;*/
-  /*}*/
 
-  /*.progress-bar-animated {*/
-  /*  -webkit-animation: progress-bar-stripes 1s linear infinite;*/
-  /*  animation: progress-bar-stripes 1s linear infinite;*/
-  /*}*/
 </style>

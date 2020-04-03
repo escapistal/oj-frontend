@@ -43,7 +43,7 @@ export default new Vuex.Store({
     },
     logout(state){
       state.token=undefined
-      state.curUser=undefined
+      state.curUser={}
       state.contestProblems=[]
     },
     changeProblemPageId(state,data){
@@ -88,14 +88,16 @@ export default new Vuex.Store({
         Vue.prototype.$toastr.warning(res.data.msg)
     },
     loadContestProblems:async function({dispatch,commit,state},payload){
-      if(!payload.id||state.contestProblems.length&&state.contestProblems[0].contest.id==payload.id)
+      if(!payload.id||!payload.force&&state.contestProblems.length&&state.contestProblems[0].contest.id==payload.id)
         return
       await dispatch('loadContest', {id: payload.id})
       let res = await Vue.prototype.$axios.get('/contestProblem/list/' + payload.id, {})
       if(res.data.status==0)
         await commit('setContestProblems', res.data.data)
-      else
+      else {
+        await commit('setContestProblems',[])
         Vue.prototype.$toastr.warning(res.data.msg)
+      }
     },
     loadContestProblem:async function({dispatch,commit,state},payload){
       if(!payload.id)

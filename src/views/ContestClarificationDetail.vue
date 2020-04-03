@@ -1,5 +1,5 @@
 <template>
-  <div class="container">
+  <div class="container-fluid">
     <div class="background" style="min-height: 600px;position: relative;">
       <router-link :to="'/contest/'+contest.id+'/clarification'">
         <button type="button" class="btn btn-light rounded border" style="position: absolute;right: 24px;">

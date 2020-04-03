@@ -1,5 +1,5 @@
 <template>
-  <div class="container">
+  <div class="container-fluid">
     <div class="background" style="padding-bottom: 20px">
       <h4 class="text-left">Announcements</h4>
       <div id="annos-accordion">

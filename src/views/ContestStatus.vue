@@ -1,5 +1,5 @@
 <template>
-  <div class="container">
+  <div class="container-fluid">
     <div class="background">
       <div class="row dropright">
         <h4 class="text-left">Submissions</h4>
@@ -119,7 +119,7 @@
         status:'',
         lang:'',
         refreshing:false,
-        updating:false,
+        refreshTimeout:undefined,
         mine:true,
         statusList:[
           {msg:'Accepted',value:'AC'},
@@ -133,58 +133,15 @@
           {msg:'Pending',value:'PENDING'},
           {msg:'Judging',value:'JUDGING'}
         ],
-        // langList:[
-        //   'All',
-        //   'C',
-        //   'C++',
-        //   'Java',
-        //   'Python 2',
-        //   'Python 3'
-        // ]
       }
-    },
-    created: async function () {
-      if(this.$route.params.id)
-        this.cid=this.$route.params.id
-      else{
-        this.$toastr.warning('比赛id不能为空')
-        return
-      }
-      await this.$store.dispatch('loadContestProblems',{id:this.$route.params.id})
-      if(this.$route.params.mine!==undefined) {
-        this.mine = this.$route.params.mine
-      }
-      if(this.$route.params.pid) {
-        this.pid = this.$route.params.pid
-      }
-      this.$axios.get('/contestSubmission/list',{
-        params:{
-          page: this.pageId - 1,
-          size: this.pageSize,
-          cid:this.cid,
-          uid:this.mine?this.curUser.id:undefined,
-          uname:this.uname,
-          pid:this.pid,
-          status:this.status,
-          lang:this.lang
-        }
-      }).then(response=>{
-        this.pageTotal=response.data.data.totalPages
-        if(this.pageTotal>0) {
-          this.submissionList = new Array(this.pageTotal)
-          this.submissionList[0] = (response.data.data.content);
-        }
-        this.refresh(3000)
-      })
     },
     methods:{
       refresh: async function (depth) {
-        if (this.$route.name !== 'ContestStatus' || depth >= 30 * 60 * 1000)
-          return
-        if (!this.refreshing)
+        if (!this.refreshing){
           await this.showPage(this.pageId, true)
+        }
         const that = this
-        setTimeout(function () {
+        this.refreshTimeout = setTimeout(function () {
           that.refresh(depth * 1.5)
         }, depth)
       },
@@ -195,7 +152,7 @@
           this.showPage(this.pageId,true)
       },
       showPage: async function (pageId, forceUpdate) {
-        if (pageId === '...' || pageId < 1 || pageId > this.pageTotal)
+        if (pageId === '...')
           return
         if (forceUpdate || !this.contestList[pageId - 1]) {
           this.refreshing = true
@@ -212,7 +169,6 @@
             }
           }).then(response => {
             this.refreshing = false
-            console.log(response)
             if (response.data.data.totalPages > this.pageTotal) {
               this.pageTotal = response.data.data.totalPages
               this.submissionList = new Array(this.pageTotal)
@@ -237,6 +193,35 @@
         // 映射
         'curUser','contest','contestProblems'
       ])
+    },
+    beforeRouteEnter: function (to,from,next) {
+      next(async vm => {
+        vm.cid=vm.$route.params.id
+        await vm.$store.dispatch('loadContestProblems',{id:vm.$route.params.id})
+        if(vm.$route.params.mine!==undefined)
+          vm.mine = vm.$route.params.mine
+        if(vm.$route.params.pid)
+          vm.pid = vm.$route.params.pid
+        vm.refresh(3000)
+      })
+    },
+    beforeRouteUpdate: async function (to,from,next) {
+      this.cid=to.params.id
+      await this.$store.dispatch('loadContestProblems',{id:to.params.id})
+      if(to.params.mine!==undefined)
+        this.mine = to.params.mine
+      if(to.params.pid)
+        this.pid = to.params.pid
+      await this.showPage(this.pageId, true)
+      if(this.refreshTimeout)
+        clearTimeout(this.refreshTimeout)
+      this.refresh(3000)
+      next()
+    },
+    beforeRouteLeave:function (to,from,next) {
+      if(this.refreshTimeout)
+        clearTimeout(this.refreshTimeout)
+      next()
     }
   }
 </script>
