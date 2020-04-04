@@ -1,6 +1,6 @@
 <template>
   <div class="container-fluid">
-    <div class="background">
+    <div class="background" style="min-height: 600px;">
       <table class="table table-bordered table-sm" style="width: 100%">
         <thead style="width: 100%"><tr>
           <th style="width: 6%;">Rank</th>
@@ -35,7 +35,7 @@
           </tr>
         </tbody>
       </table>
-      {{ranks}}
+<!--      {{ranks}}-->
     </div>
   </div>
 </template>

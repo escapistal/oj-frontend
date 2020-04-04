@@ -65,25 +65,21 @@
               {{item.problem.name+". "+item.problem.title}}
             </router-link>
           </td>
-          <td>{{item.language}}</td>
           <td>
-            <span v-if="item.status==='PENDING'" class="badge badge-secondary">Pending</span>
-            <span v-else-if="item.status==='JUDGING'" class="badge badge-info">Judging</span>
-            <span v-else-if="item.status==='AC'" class="badge badge-success">Accepted</span>
-            <span v-else-if="item.status==='WA'" class="badge badge-danger">Wrong Answer</span>
-            <span v-else-if="item.status==='TLE'" class="badge badge-danger">Time Limit Exceed</span>
-            <span v-else-if="item.status==='MLE'" class="badge badge-danger">Memory Limit Exceed</span>
-            <span v-else-if="item.status==='RE'" class="badge badge-danger">Runtime Error</span>
-            <span v-else-if="item.status==='PE'" class="badge badge-warning">Presentation Error</span>
-            <span v-else class="badge badge-dark">System Error</span>
+            <router-link v-if="item.user.id===curUser.id" :to="'/contest/'+contest.id+'/submission/'+item.id">
+              {{item.language}}
+            </router-link>
+            <span v-else>{{item.language}}</span>
+          </td>
+          <td>
+            <router-link v-if="item.user.id===curUser.id" :to="'/contest/'+contest.id+'/submission/'+item.id">
+              <span class="badge" :class="statusSet[item.status].clazz">{{statusSet[item.status].msg}}</span>
+            </router-link>
+            <span v-else class="badge" :class="statusSet[item.status].clazz">{{statusSet[item.status].msg}}</span>
           </td>
           <td>{{item.executeTime}}</td>
           <td>{{item.executeMemory}}</td>
           <td>{{item.codeLength}}</td>
-<!--          <td v-if="item.problem.contest">-->
-<!--            <router-link :to="'/contest/'+item.problem.contest.id">{{item.problem.contest.title.strip(30)}}</router-link>-->
-<!--          </td>-->
-<!--          <td v-else>题库</td>-->
         </tr>
         </tbody>
       </table>
@@ -133,6 +129,18 @@
           {msg:'Pending',value:'PENDING'},
           {msg:'Judging',value:'JUDGING'}
         ],
+        statusSet:{
+          'AC':{msg:'Accepted',clazz:{'badge-success':true}},
+          'WA':{msg:'Wrong Answer',clazz:{'badge-danger':true}},
+          'TLE':{msg:'Time Limit Exceed',clazz:{'badge-danger':true}},
+          'MLE':{msg:'Memory Limit Exceed',clazz:{'badge-danger':true}},
+          'RE':{msg:'Runtime Error',clazz:{'badge-danger':true}},
+          'PE':{msg:'Presentation Error',clazz:{'badge-warning':true}},
+          'CE':{msg:'Compile Error',clazz:{'badge-danger':true}},
+          'SE':{msg:'System Error',clazz:{'badge-dark':true}},
+          'PENDING':{msg:'Pending',clazz:{'badge-secondary':true}},
+          'JUDGING':{msg:'Judging',clazz:{'badge-info':true}}
+        }
       }
     },
     methods:{
@@ -219,6 +227,7 @@
       next()
     },
     beforeRouteLeave:function (to,from,next) {
+      console.log('leave')
       if(this.refreshTimeout)
         clearTimeout(this.refreshTimeout)
       next()

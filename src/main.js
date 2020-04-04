@@ -24,6 +24,9 @@ import 'mavon-editor/dist/css/index.css'
 Vue.use(mavonEditor)
 
 import 'clipboard/dist/clipboard.js'
+
+
+
 // import clipboard from 'clipboard';
 // Vue.prototype.clipboard = clipboard;
 // import VueClipboard from 'vue-clipboard2'
