@@ -12,7 +12,7 @@
             </div>
           </div>
         </div>
-        <div class="container" v-show="annos.length>0&&$route.name!=='ContestClarificationDetail'&&$route.name!=='ContestClarification'">
+        <div class="container-fluid" v-show="annos.length>0&&$route.name!=='ContestClarificationDetail'&&$route.name!=='ContestClarification'">
           <div class="background font-weight-bold" style="padding: 0">
             <div class="carousel slide" data-ride="carousel" data-interval="5000">
               <div class="carousel-inner">
@@ -23,7 +23,7 @@
             </div>
           </div>
         </div>
-        <div class="container" v-show="newclar&&$route.name!=='ContestClarificationDetail'&&$route.name!=='ContestClarification'">
+        <div class="container-fluid" v-show="newclar&&$route.name!=='ContestClarificationDetail'&&$route.name!=='ContestClarification'">
           <div class="background font-weight-bold" style="padding: 0">
             <router-link :to="'/contest/'+contest.id+'/clarification'">
               New Clarification Response, Click to see
