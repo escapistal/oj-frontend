@@ -7,7 +7,7 @@ Vue.use(Vuex)
 export default new Vuex.Store({
   state: {
     token:undefined,
-    curUser:{},
+    curUser:{role:[]},
     problemPageId:1,
     contestPageId:1,
     contest:{
@@ -31,9 +31,9 @@ export default new Vuex.Store({
     }
   },
   getters: {
-    // doneTodos: state => {
-    //   return state.todos.filter(todo => todo.done)
-    // }
+    isAdmin: state => {
+      return state.curUser.role.indexOf('admin')!=-1
+    }
   },
   mutations: {
     login(state,data){
@@ -43,7 +43,7 @@ export default new Vuex.Store({
     },
     logout(state){
       state.token=undefined
-      state.curUser={}
+      state.curUser={role:[]}
       state.contestProblems=[]
     },
     changeProblemPageId(state,data){
@@ -72,8 +72,13 @@ export default new Vuex.Store({
     },
     setClarRead(state,data){
       for(let i=0;i<state.clars.length;i++)
-        if(data===state.clars[i].id)
-          state.clars[i].readByUser=true
+        if(data===state.clars[i].id) {
+          if(state.curUser.role.indexOf('admin')!=-1)
+            state.clars[i].readByAdmin = true
+          else
+            state.clars[i].readByUser = true
+          return
+        }
     }
   },
   actions: {

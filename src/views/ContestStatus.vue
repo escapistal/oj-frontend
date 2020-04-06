@@ -237,11 +237,11 @@
 
 <style scoped>
   .checkbox {
-    position: relative;
-    display: inline-block;
-    font-size: 13px;
-    overflow: hidden;
-  }
+     position: relative;
+     display: inline-block;
+     font-size: 13px;
+     overflow: hidden;
+   }
   .checkbox:after, .checkbox:before {
     /*font-family: FontAwesome;*/
     -webkit-font-feature-settings: normal;

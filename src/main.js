@@ -3,9 +3,11 @@ import App from './App.vue'
 import router from './router'
 import './plugins/axios'
 import store from './store'
-
-import 'bootstrap/dist/css/bootstrap.min.css'
+import 'jquery/dist/jquery.js'
 import $ from 'jquery'
+import 'bootstrap/dist/css/bootstrap.min.css'
+
+
 import 'bootstrap/dist/js/bootstrap.min.js'
 
 import 'toastr/build/toastr.css'

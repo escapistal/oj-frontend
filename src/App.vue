@@ -7,7 +7,7 @@
             </button>
             <div class="collapse navbar-collapse" id="collapsibleNavbar">
                 <ul class="navbar-nav">
-                    <li class="nav-item" v-for="(item,index) in routerList"
+                    <li class="nav-item" v-for="(item,index) in getrouterList"
                         @click="handleRouterClick(index)"
                         data-toggle="collapse" data-target="#collapsibleNavbar.show">
                         <router-link :to="item.to" class="nav-link" :class="index==routerSelectId?'nav-selected':'nav-unselected'">
@@ -139,8 +139,8 @@
         data: function () {
             return {
                 routerSelectId:-1,
-                username:'jxc',
-                password:'123456',
+                username:'admin',
+                password:'admin!',
                 password2:'',
                 emailFirst:'',
                 emailSecond:'',
@@ -170,6 +170,12 @@
                         to:"/about",
                         icon:require("@/assets/training.png"),
                         msg:"About"
+                    },
+                    {
+                        to:"/admin",
+                        icon:require("@/assets/training.png"),
+                        msg:"Manage",
+                        auth:true
                     }
                 ]
             }
@@ -245,6 +251,12 @@
         computed: {
             email:function () {
                 return this.emailFirst+'@'+this.emailSecond
+            },
+            getrouterList:function () {
+              if(this.curUser.role.indexOf('admin')!=-1)
+                  return this.routerList
+              else
+                  return this.routerList.slice(0,this.routerList.length-1)
             },
             ...mapState([
                 // 映射 this.token 为 store.state.token

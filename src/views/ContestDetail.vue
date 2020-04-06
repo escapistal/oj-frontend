@@ -1,31 +1,24 @@
 <template>
   <div class="container-fluid">
-<!--    <div class="background">-->
-<!--    <ul class="nav nav-tabs">-->
-<!--      <li class="nav-item" v-for="(item,index) in nav">-->
-<!--        <router-link class="nav-link" :class="{'active':index===routerSelectId}"-->
-<!--                     @click.native="routerSelectId=index" :to="'/contest/'+id+item.to" style="color:#000;">-->
-<!--          <img class="icon" :src="item.icon">{{item.msg}}-->
-<!--        </router-link>-->
-<!--      </li>-->
-<!--    </ul>-->
-<!--    </div>-->
-<!--    <router-view></router-view>-->
-<!--    <div class="row" style="margin:0 auto">-->
-<!--          -->
-<!--    </div>-->
     <div class="row" style="margin:0 auto">
-<!--      {{startTick}}-->
-<!--      {{tick}}-->
-<!--      {{endTick}}-->
       <div class="col">
         <div class="container-fluid">
           <div class="background"  style="padding: 0">
             <div class="progress text-center" style="background-color: #ffffff;">
-
               <div class="progress-bar progress-bar-striped progress-bar-animated bg-dark" role="progressbar"
                    :style="{width: progress+'%'}">
                 <div class="timebar">{{bartext}}</div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="container" v-show="annos.length>0&&$route.name!=='ContestClarificationDetail'&&$route.name!=='ContestClarification'">
+          <div class="background font-weight-bold" style="padding: 0">
+            <div class="carousel slide" data-ride="carousel" data-interval="5000">
+              <div class="carousel-inner">
+                <div class="carousel-item" v-for="(item,index) in annos" :class="{active:index==0}" >
+                  <router-link :to="'/contest/'+contest.id+'/clarification'">{{item.title}}</router-link>
+                </div>
               </div>
             </div>
           </div>
@@ -155,7 +148,6 @@
       return {
         tick:0,
         routerSelectId:0,
-        newclar:false,
         countdownInterval:undefined,
         refreshInterval:undefined,
         nav:[
@@ -197,6 +189,21 @@
         this.$router.push({path:'/contest/'+this.contest.id+item.to})
       }
     },
+    mounted:function(){
+      $('.carousel').carousel({
+        interval:5000,  //延时间隔5秒
+        pause:"hover",  //鼠标放图片上暂停 false不暂停
+      })
+      // this.$nextTick(()=>{
+      //     this.$refs.demo.carousel({
+      //       interval:1000,  //延时间隔5秒
+      //       pause:"hover",  //鼠标放图片上暂停 false不暂停
+      //     });
+      //   }
+      // )
+      // this.$nextTick(()=>{
+      // this.$refs.demo1.click()})
+    },
     computed:{
       progress:function () {
         if(this.tick>this.endTick)
@@ -231,9 +238,16 @@
       endTick:function () {
         return new Date(this.contest.endTime).getTime()
       },
+      newclar:function () {
+        const isAdmin=this.$store.getters.isAdmin
+        for(let i=0;i<this.clars.length;i++)
+          if(!isAdmin&&!this.clars[i].readByUser||isAdmin&&!this.clars[i].readByAdmin)
+            return true
+        return false
+      },
       ...mapState([
         // 映射
-        'curUser','contestProblem','contest','clars'
+        'curUser','contestProblem','contest','clars','annos'
       ])
     },
     beforeRouteEnter: function (to,from,next) {
@@ -246,11 +260,7 @@
             that.tick = new Date().getTime();
           },100)
           vm.refreshInterval = setInterval(async function () {
-            let has=false
-            for(let i=0;i<that.clars.length;i++)
-              if(!that.clars[i].readByUser)
-                has=true
-            that.newclar=has
+            await that.$store.dispatch('loadAnnosAndClars', {id: that.$route.params.id})
           },60000)
         }
       )
@@ -274,11 +284,6 @@
       },100)
       that.refreshInterval = setInterval(async function () {
         await that.$store.dispatch('loadAnnosAndClars', {id: that.$route.params.id})
-        let has=false
-        for(let i=0;i<that.clars.length;i++)
-          if(!that.clars[i].readByUser)
-            has=true
-        that.newclar=has
       },60000)
       next()
     },
