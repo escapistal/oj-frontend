@@ -46,12 +46,12 @@
           return '0%'
         return (a / b*100).toFixed(2)+'%'
       },
-        timeAndMemoryLabel:function (id) {
-          let t=(this.problems[id].timeLimit/1000).toFixed(1)
-          let m=(this.problems[id].memoryLimit).toFixed(0)
-          let a=this.problems[id].allowLanguage
-          let s=this.problems[id].spj
-          let ttag='',mtag=''
+      timeAndMemoryLabel:function (id) {
+        let t=(this.problems[id].timeLimit/1000).toFixed(1)
+        let m=(this.problems[id].memoryLimit).toFixed(0)
+        let a=this.problems[id].allowLanguage
+        let s=this.problems[id].spj
+        let ttag='',mtag=''
         for(let i=0;i<a.length;i++) {
           if (a[i].time_factor != 1)
             ttag = '*'

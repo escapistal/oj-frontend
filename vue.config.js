@@ -1,6 +1,7 @@
 const webpack = require("webpack");
 
 module.exports = {
+    // mode: 'production',
     configureWebpack: {
         plugins: [
             new webpack.ProvidePlugin({
@@ -13,8 +14,8 @@ module.exports = {
     },
     devServer: {
         proxy: {
-            '/': {
-                target: 'http://localhost/api',
+            '/api/': {
+                target: 'http://39.96.54.145',
                 ws: true,
                 changeOrigin: true,
                 // pathRewrite : {

@@ -7,18 +7,23 @@
     "build": "vue-cli-service build"
   },
   "dependencies": {
+    "@fortawesome/fontawesome-free": "^5.13.0",
     "ace-builds": "^1.4.8",
     "bootstrap": "^4.4.1",
     "clipboard": "^2.0.4",
     "code-prettify": "git://github.com/google/code-prettify.git#master",
     "core-js": "^3.6.4",
+    "daterangepicker": "^3.0.5",
     "google-code-prettify": "^1.0.5",
     "jquery": "^3.4.1",
     "katex": "^0.11.1",
     "mavon-editor": "^2.7.7",
+    "pc-bootstrap4-datetimepicker": "^4.17.50",
     "popper.js": "^1.16.1",
     "toastr": "^2.1.4",
+    "v-selectpage": "^2.1.4",
     "vue": "^2.6.11",
+    "vue-bootstrap-datetimepicker": "^5.0.1",
     "vue-clipboard2": "^0.3.1",
     "vue-router": "^3.1.5",
     "vue2-ace-editor": "0.0.15",
@@ -33,6 +38,7 @@
     "less": "^3.0.4",
     "less-loader": "^5.0.0",
     "vue-cli-plugin-axios": "0.0.4",
-    "vue-template-compiler": "^2.6.11"
+    "vue-template-compiler": "^2.6.11",
+    "webpack-cli": "^3.3.11"
   }
 }

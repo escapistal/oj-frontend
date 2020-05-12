@@ -10,7 +10,7 @@
                     <li class="nav-item" v-for="(item,index) in getrouterList"
                         @click="handleRouterClick(index)"
                         data-toggle="collapse" data-target="#collapsibleNavbar.show">
-                        <router-link :to="item.to" class="nav-link" :class="index==routerSelectId?'nav-selected':'nav-unselected'">
+                        <router-link :to="item.to" class="nav-link" :class="$route.path===item.to?'nav-selected':'nav-unselected'">
                             <img class="icon" :src="item.icon">{{item.msg}}
                         </router-link>
                     </li>
@@ -22,7 +22,9 @@
                             {{curUser.nickname}}
                         </span>
                         <div class="dropdown-menu" style="left:unset;right:0;min-width:unset;padding: .25rem 0">
-                            <span v-if="curUser.role.indexOf('admin')!=-1" class="dropdown-item btn">Management</span>
+                            <router-link v-if="$store.getters.isAdmin" :to="'/admin'">
+                                <span class="dropdown-item btn">Management</span>
+                            </router-link>
                             <span class="dropdown-item btn">Profile</span>
                             <span class="dropdown-item btn">Settings</span>
                             <span class="dropdown-item btn">Stats</span>
@@ -139,8 +141,8 @@
         data: function () {
             return {
                 routerSelectId:-1,
-                username:'admin',
-                password:'admin!',
+                username:'',
+                password:'',
                 password2:'',
                 emailFirst:'',
                 emailSecond:'',
@@ -150,7 +152,7 @@
                     {
                         to:"/",
                         icon:require("@/assets/training.png"),
-                        msg:"Home"
+                        msg:"Home",
                     },
                     {
                         to:"/problem",
@@ -172,9 +174,15 @@
                         msg:"About"
                     },
                     {
-                        to:"/admin",
+                        to:"/admin/user",
                         icon:require("@/assets/training.png"),
                         msg:"Manage",
+                        auth:true
+                    },
+                    {
+                        to:"/admin",
+                        icon:require("@/assets/training.png"),
+                        msg:"API Document",
                         auth:true
                     }
                 ]
@@ -253,10 +261,10 @@
                 return this.emailFirst+'@'+this.emailSecond
             },
             getrouterList:function () {
-              if(this.curUser.role.indexOf('admin')!=-1)
+              if(this.$store.getters.isAdmin)
                   return this.routerList
               else
-                  return this.routerList.slice(0,this.routerList.length-1)
+                  return this.routerList.slice(0,this.routerList.length-2)
             },
             ...mapState([
                 // 映射 this.token 为 store.state.token
@@ -310,11 +318,14 @@
     html{
         background-color: #e9ecef;
     }
+    a{
+        color:black;
+    }
     .background{
         padding: 1.5rem 2rem 0.2rem;
         margin-top: 1rem;
         background-color: #ffffff;
         border-radius: 0.5rem;
-        overflow:hidden;
+        overflow: auto;
     }
 </style>

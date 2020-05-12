@@ -66,13 +66,13 @@
             </router-link>
           </td>
           <td>
-            <router-link v-if="item.user.id===curUser.id" :to="'/contest/'+contest.id+'/submission/'+item.id">
+            <router-link v-if="item.user.id===curUser.id||$store.getters.isAdmin" :to="'/contest/'+contest.id+'/submission/'+item.id">
               {{item.language}}
             </router-link>
             <span v-else>{{item.language}}</span>
           </td>
           <td>
-            <router-link v-if="item.user.id===curUser.id" :to="'/contest/'+contest.id+'/submission/'+item.id">
+            <router-link v-if="item.user.id===curUser.id||$store.getters.isAdmin" :to="'/contest/'+contest.id+'/submission/'+item.id">
               <span class="badge" :class="statusSet[item.status].clazz">{{statusSet[item.status].msg}}</span>
             </router-link>
             <span v-else class="badge" :class="statusSet[item.status].clazz">{{statusSet[item.status].msg}}</span>

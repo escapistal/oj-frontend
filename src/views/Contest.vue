@@ -17,8 +17,13 @@
                     <span class="card-text">{{timeRange(item.startTime,item.endTime)}}</span>
                     <img class="icon" src="@/assets/training.png">
                     <span class="card-text">{{timeDist(item.startTime,item.endTime)}}</span>
-                    <span class="card-text float-right">{{getStatus(item.startTime,item.endTime)}}</span>
+<!--                    <span class="card-text float-right">{{getStatus(item.startTime,item.endTime)}}</span>-->
                     <!--                  <a href="#" class="card-link">Card link</a>-->
+                    <span class="card-text float-right">
+                      <span v-if="new Date()<new Date(item.startTime)" class="badge badge-primary">Pending</span>
+                      <span v-else-if="new Date()<new Date(item.endTime)" class="badge badge-success">Running</span>
+                      <span v-else class="badge badge-secondary">Ended</span>
+                    </span>
                   </div>
                 </div>
               </div>
@@ -42,8 +47,8 @@
                   <span class="card-text">{{timeDist(item.startTime,item.endTime)}}</span>
                   <span class="card-text float-right">
 <!--                    <span v-if="new Date()<item.startTime" class="badge badge-secondary">{{getStatus(item.startTime,item.endTime)}}</span>-->
-                    <span v-if="new Date()<item.startTime" class="badge badge-primary">Pending</span>
-                    <span v-else-if="new Date()<item.endTime" class="badge badge-success">Running</span>
+                    <span v-if="new Date()<new Date(item.startTime)" class="badge badge-primary">Pending</span>
+                    <span v-else-if="new Date()<new Date(item.endTime)" class="badge badge-success">Running</span>
                     <span v-else class="badge badge-secondary">Ended</span>
                   </span>
                 </div>
@@ -61,26 +66,6 @@
       </div>
       <div class="col-md-2">
         <div class="container background" style="padding: 0">
-          <table class="table">
-            <tbody>
-            <tr>
-              <td class="text-left">
-                aaa
-              </td>
-              <td class="text-right">
-                bbb
-              </td>
-            </tr>
-            <tr>
-              <td class="text-left">
-                aaa
-              </td>
-              <td class="text-right">
-                bbb
-              </td>
-            </tr>
-            </tbody>
-          </table>
           <div class="btn-group-vertical" style="width: 100%">
             <button type="button" class="btn border text-left" style="min-width: 134px"><img class="icon" src="@/assets/training.png">Overview</button>
             <button type="button" class="btn border text-left" style="min-width: 134px"><img class="icon" src="@/assets/training.png">Clarification</button>
@@ -108,7 +93,7 @@
         curContestList:[],
         contestList:[],
         pageId:1,
-        pageSize:10,
+        pageSize:8,
         pageTotal:0,
       }
     },
@@ -132,7 +117,7 @@
         this.pageTotal=response.data.data.totalPages
         if(this.pageTotal>0) {
           this.contestList = new Array(this.pageTotal)
-          this.contestList[0] = response.data.data.content;
+          this.$set(this.contestList, this.pageId-1, response.data.data.content)
         }
       })
     },
@@ -180,20 +165,21 @@
         return '正在进行'
       },
       showPage:function(pageId,forceUpdate){
-        if(pageId=='...'||pageId<1||pageId>this.pageTotal)
+        if(pageId=='...')
           return
         if(forceUpdate||!this.contestList[pageId-1]){
           this.$axios.get('/contest/list',{
             params:{
               page: pageId - 1,
-              size: this.pageSize
+              size: this.pageSize,
+              state: 'ended'
             }
           }).then(response=>{
-            if(response.data.data.totalPages>this.pageTotal) {
+            if(forceUpdate||response.data.data.totalPages>this.pageTotal) {
               this.pageTotal=response.data.data.totalPages
               this.contestList = new Array(this.pageTotal)
             }
-            this.contestList[pageId-1]=(response.data.data.content)
+            this.$set(this.contestList, pageId - 1, response.data.data.content)
             this.$store.commit('changeContestPageId',pageId)
             this.pageId=pageId
           })

@@ -77,6 +77,11 @@ const routes = [
     component: () => import(/* webpackChunkName: "about" */ '../views/Status.vue')
   },
   {
+    path:'/submission/:sid',
+    name:'StatusDetail',
+    component: () => import(/* webpackChunkName: "about" */ '../views/StatusDetail.vue'),
+  },
+  {
     path: '/about',
     name: 'About',
     // route level code-splitting
@@ -87,7 +92,39 @@ const routes = [
   {
     path: '/admin',
     name: 'Admin',
-    component: () => import(/* webpackChunkName: "about" */ '../views/Admin.vue')
+    component: () => import(/* webpackChunkName: "about" */ '../views/Admin.vue'),
+    children:[
+      {
+        path: '',
+        name: 'AdminMain',
+        component: () => import(/* webpackChunkName: "about" */ '../views/AdminMainPage.vue')
+      },
+      {
+        path: 'announcement',
+        name: 'AdminAnnouncement',
+        component: () => import(/* webpackChunkName: "about" */ '../views/AdminAnnouncement.vue')
+      },
+      {
+        path: 'user',
+        name: 'AdminUser',
+        component: () => import(/* webpackChunkName: "about" */ '../views/AdminUser.vue')
+      },
+      {
+        path: 'problem',
+        name: 'AdminProblem',
+        component: () => import(/* webpackChunkName: "about" */ '../views/AdminProblem.vue')
+      },
+      {
+        path: 'contest',
+        name: 'AdminContest',
+        component: () => import(/* webpackChunkName: "about" */ '../views/AdminContest.vue')
+      },
+      {
+        path: 'systemconfig',
+        name: 'AdminSystemConfig',
+        component: () => import(/* webpackChunkName: "about" */ '../views/AdminSystemConfig.vue')
+      },
+    ]
   },
   {
     path: '/',

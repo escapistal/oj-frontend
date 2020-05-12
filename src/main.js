@@ -27,6 +27,25 @@ Vue.use(mavonEditor)
 
 import 'clipboard/dist/clipboard.js'
 
+import vSelectPage from 'v-selectpage'
+Vue.use(vSelectPage)
+
+import 'vue-bootstrap-datetimepicker';
+import 'pc-bootstrap4-datetimepicker/build/css/bootstrap-datetimepicker.css';
+import '@fortawesome/fontawesome-free/css/all.css';
+jQuery.extend(true, jQuery.fn.datetimepicker.defaults, {
+  icons: {
+    time: 'far fa-clock',
+    date: 'far fa-calendar',
+    up: 'fas fa-arrow-up',
+    down: 'fas fa-arrow-down',
+    previous: 'fas fa-chevron-left',
+    next: 'fas fa-chevron-right',
+    today: 'fas fa-calendar-check',
+    clear: 'far fa-trash-alt',
+    close: 'far fa-times-circle'
+  }
+});
 
 
 // import clipboard from 'clipboard';
@@ -61,6 +80,7 @@ Date.prototype.format = function (fmt) {
   const o = {
     "M+": this.getMonth() + 1, //月份
     "d+": this.getDate(), //日
+    "H+": this.getHours(), //小时
     "h+": this.getHours(), //小时
     "m+": this.getMinutes(), //分
     "s+": this.getSeconds(), //秒

@@ -21,12 +21,12 @@
         </div>
       </div>
 
-      <table class="table table-bordered table-sm" style="width: 100%">
-        <thead style="width: 100%"><tr>
+      <table class="table table-bordered table-sm" style="word-wrap:break-word;word-break:break-all;">
+        <thead><tr>
           <th style="width: 6%;">Rank</th>
-          <th style="max-width: 30%">Id</th>
-          <th style="width: 8%;">AC</th>
-          <th style="width: 6%;">Penalty</th>
+          <th style="max-width: 30%">User</th>
+          <th style="width: 6%;">AC</th>
+          <th style="width: 8%;">Penalty</th>
           <th v-for="item in problems" :id="item.id">
             <router-link :to="'/contest/'+contest.id+'/problem/'+item.id" style="color: unset">{{item.name}}</router-link>
           </th>

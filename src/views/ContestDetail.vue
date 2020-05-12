@@ -23,7 +23,7 @@
             </div>
           </div>
         </div>
-        <div class="container-fluid" v-show="newclar&&$route.name!=='ContestClarificationDetail'&&$route.name!=='ContestClarification'">
+        <div class="container-fluid" v-show="newclar>0&&$route.name!=='ContestClarificationDetail'&&$route.name!=='ContestClarification'">
           <div class="background font-weight-bold" style="padding: 0">
             <router-link :to="'/contest/'+contest.id+'/clarification'">
               New Clarification Response, Click to see
@@ -36,9 +36,10 @@
       <div class="col-md-2 show" style="padding: 0" id="bar">
         <div class="container background" style="padding: 0">
           <div class="btn-group-vertical" style="width: 100%">
-            <button v-for="item in nav" type="button" class="btn border text-left" @click="handleNavClick(item)">
+            <button v-for="(item,index) in nav" type="button" class="btn border text-left" @click="handleNavClick(item)"
+                    :disabled="index>0&&(new Date()<new Date(contest.startTime)||!$store.getters.isLogin)">
 <!--              <router-link :to="'/contest/'+contest.id+item.to" style="color:#000;">-->
-                <img class="icon" :src="item.icon">{{item.msg}}
+                <img class="icon" :src="item.icon">{{item.msg}}<span v-if="index==1&&newclar>0" class="ml-2 badge badge-secondary">{{newclar}}</span>
 <!--              </router-link>-->
             </button>
           </div>
@@ -194,15 +195,6 @@
         interval:5000,  //延时间隔5秒
         pause:"hover",  //鼠标放图片上暂停 false不暂停
       })
-      // this.$nextTick(()=>{
-      //     this.$refs.demo.carousel({
-      //       interval:1000,  //延时间隔5秒
-      //       pause:"hover",  //鼠标放图片上暂停 false不暂停
-      //     });
-      //   }
-      // )
-      // this.$nextTick(()=>{
-      // this.$refs.demo1.click()})
     },
     computed:{
       progress:function () {
@@ -218,6 +210,9 @@
       bartext:function () {
         if(this.tick>this.endTick)
           return 'Ended'
+        if(!this.contest.startTime||!this.contest.endTime)
+          return 'Loading'
+        // console.log(this.contest.startTime)
         let ret='',msec=0
         if(this.tick<this.startTick){
           ret='-'
@@ -230,6 +225,8 @@
         let hr = parseInt(msec / 60 / 60 % 24)
         let min = parseInt(msec / 60 % 60)
         let sec = parseInt(msec % 60)
+        if(day>=100)
+          return 'Loading'
         return ret+(day?day+":":"")+(hr > 9 ? hr : '0' + hr)+':'+(min > 9 ? min : '0' + min)+':'+(sec > 9 ? sec : '0' + sec)
       },
       startTick:function () {
@@ -240,10 +237,11 @@
       },
       newclar:function () {
         const isAdmin=this.$store.getters.isAdmin
+        let res=0
         for(let i=0;i<this.clars.length;i++)
           if(!isAdmin&&!this.clars[i].readByUser||isAdmin&&!this.clars[i].readByAdmin)
-            return true
-        return false
+            res++
+        return res
       },
       ...mapState([
         // 映射

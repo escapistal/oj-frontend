@@ -20,6 +20,7 @@ const _axios = axios.create(config);
 _axios.interceptors.request.use(
   config=> {
     // Do something before request is sent
+    config.url='/api'+config.url
     if(store.state.token)
       config.headers.Authorization='Bearer '+store.state.token
     return config;

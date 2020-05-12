@@ -72,7 +72,7 @@
               </tr>
               <tr id="timeFactor" class="collapse">
                 <td colspan="2" style="padding: 0">
-                  <table class="table" style="width:100%;margin-bottom: 0;">
+                  <table class="table table-sm table-striped" style="width:100%;margin-bottom: 0;">
                     <tr v-for="lang in problem.allowLanguage">
                       <td class="text-left info-left">{{lang.language}}</td>
                       <td class="text-right info-right">{{Math.round(problem.timeLimit*lang.time_factor)}}ms</td>
@@ -82,7 +82,7 @@
               </tr>
               <tr>
                 <td class="text-left info-left">Memorylimit</td>
-                <td class="text-right info-right">{{problem.memoryLimit}}mb
+                <td class="text-right">{{problem.memoryLimit}}mb
                   <button type="button" class="btn btn-sm dropdown-toggle dropdown-toggle-split" style="padding:0;width: 1rem" data-toggle="collapse" data-target="#memoryFactor">
                     <span class="sr-only"></span>
                   </button>
@@ -166,7 +166,7 @@
     },
     methods: {
       submit:function(){
-        if(!this.curUser)
+        if(!this.curUser.id)
           this.$toastr.error('登录后才能提交')
         else{
           this.$axios.post('/submission/submit',{
@@ -178,10 +178,8 @@
             'language':this.lang,
             'code':this.code
           }).then(response=>{
-            console.log(response)
             this.$toastr.success('提交成功')
-            console.log(this.curUser)
-            this.$router.push({ name: 'Status', params: { uid:this.curUser.id }})
+            this.$router.push({ name: 'Status', params: { uname:this.curUser.nickname, pid:this.id }})
           })
         }
       },
@@ -243,9 +241,9 @@
 </script>
 
 <style>
-  a{
-    color:black
-  }
+  /*a{*/
+  /*  color:black*/
+  /*}*/
 
   .sample{
     border: 1px solid #888;

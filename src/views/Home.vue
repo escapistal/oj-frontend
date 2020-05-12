@@ -6,7 +6,7 @@
                 <table class="table table-hover" >
                     <tbody>
                     <tr v-for="item in announcementList[pageId-1]" :key="item.id">
-                        <td class="text-left" @click="handleAnnouncementClick(item.id)" style="width: 60%"><a href="#">{{item.title}}</a></td>
+                        <td class="text-left" @click="handleAnnouncementClick(item.id)" style="width: 70%">{{item.title.strip(70)}}</td>
                         <td class="text-left">{{item.createTime}}</td>
                         <td class="text-left">By {{item.createUser.nickname}}</td>
                     </tr>
@@ -36,7 +36,7 @@
                 ></mavon-editor>
             </div>
         </div>
-        {{curUser}}
+<!--        {{curUser}}-->
     </div>
 </template>
 
@@ -69,8 +69,6 @@
                     size: this.pageSize
                 }
             }).then(response=>{
-                console.log(response)
-                this.transData(response.data.data.content)
                 this.pageTotal=response.data.data.totalPages
                 if(this.pageTotal>0) {
                     this.announcementList=new Array(this.pageTotal)
@@ -84,30 +82,10 @@
                 }).then(response=> {
                     this.announcement=response.data.data
                     this.showDetail=true
-                    console.log(response)
-                })
-            },
-            transData(list){
-                list.forEach(v=>{
-                    v.createTime=new Date(v.createTime).toLocaleString()
-                    v.updateTime=new Date(v.updateTime).toLocaleString()
-                    if(v.title.replace(/[\u0391-\uFFE5]/g,"aa").length>70) {
-                        let len=0
-                        console.log(v.title)
-                        for (let i=0;i<v.title.length;i++) {
-                            if ((v.title.charCodeAt(i) & 0xff00) != 0)
-                                ++len
-                            ++len
-                            if(len>=70) {
-                                v.title=v.title.substr(0,i)+'...'
-                                break
-                            }
-                        }
-                    }
                 })
             },
             showPage:function(pageId,forceUpdate){
-                if(pageId=='...'||pageId<1||pageId>this.pageTotal)
+                if(pageId=='...')
                     return
                 if(forceUpdate||!this.announcementList[pageId-1]){
                     this.$axios.get('/announcement/list',{
@@ -116,14 +94,16 @@
                             size: this.pageSize
                         }
                     }).then(response=>{
-                        console.log(response)
-                        this.transData(response.data.data.content)
-                        if(response.data.data.totalPages>this.pageTotal) {
-                            this.pageTotal=response.data.data.totalPages
-                            this.announcementList = new Array(this.pageTotal)
+                        if(response.data.status!=0)
+                            this.$toastr.warning(response.data.msg)
+                        else {
+                            if (forceUpdate || response.data.data.totalPages > this.pageTotal) {
+                                this.pageTotal = response.data.data.totalPages
+                                this.announcementList = new Array(this.pageTotal)
+                            }
+                            this.$set(this.announcementList, pageId - 1, response.data.data.content)
+                            this.pageId = pageId
                         }
-                        this.announcementList[pageId-1]=(response.data.data.content)
-                        this.pageId=pageId
                     })
                 }
                 else
@@ -144,6 +124,9 @@
         color:black
     }
 
+    td{
+        cursor: pointer;
+    }
     /*.home{*/
     /*  padding-top: 60px;*/
     /*  position: fixed;*/
